@@ -13,12 +13,14 @@ struct SearchBarView: View {
     @State private var isEditing = false
     
     var onSearchTextChange: (String) -> Void
-    var onSearchButtonClicked: () -> Void
     
     var body: some View {
         HStack {
             TextField("Search...", text: $text, onEditingChanged: { editing in
                 isEditing = editing
+                if !editing {
+                    onSearchTextChange(text)
+                }
             })
             .font(.custom("OpenSans-Regular", size: 16))
             .foregroundColor(Color(hex: 0x949494))
@@ -27,16 +29,17 @@ struct SearchBarView: View {
             .background(Color.white)
             .cornerRadius(16)
             .shadow(color: Color.black.opacity(0.05), radius: 6, x: 0, y: 6)
-            
-            Button(action: {
-                onSearchButtonClicked()
-            }) {
-                Image("icon_search")
-                    .foregroundColor(Color.blue)
-            }
-            .padding(.trailing, 8)
-            .disabled(text.isEmpty)
-            
+            .overlay(
+                HStack {
+                    Spacer()
+                    Image("icon_search")
+                        .foregroundColor(Color(hex: 0x949494))
+                        .padding(.trailing, 16)
+                }
+                    .alignmentGuide(HorizontalAlignment.trailing) { dimension in
+                        dimension.width
+                    }
+            )
             Spacer()
         }
         .padding(.horizontal, 16)

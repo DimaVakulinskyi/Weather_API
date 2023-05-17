@@ -16,24 +16,13 @@ struct ContentView: View {
         VStack {
             SearchBarView(text: $searchText) { searchText in
                 self.searchText = searchText
-            } onSearchButtonClicked: {
-                viewModel.fetchData(for: searchText)
             }
             .padding(.top)
             
             Spacer()
             
             if let weather = viewModel.weather {
-                Text("\(weather.cityName)")
-                    .font(.custom("OpenSans-Bold", size: 24))
-                    .foregroundColor(Color(hex: 0x289460))
-                Text("\(weather.country)")
-                    .font(.custom("OpenSans-Regular", size: 16))
-                    .foregroundColor(Color(hex: 0x575757))
-                List(weather.data, id: \.datetime) { weatherData in
-                    WeatherCellView(weatherData: weatherData)
-                }
-                .listStyle(.plain)
+                WeatherInfoView(weather: weather)
             } else {
                 Spacer()
                 NoResultsView()
@@ -43,12 +32,17 @@ struct ContentView: View {
         }
         .onAppear {
             locationManager.startUpdatingLocation()
-            viewModel.fetchData(for: "")
         }
         .onChange(of: searchText) { newValue in
             if newValue.isEmpty {
                 locationManager.startUpdatingLocation()
                 viewModel.fetchData(for: "")
+            } else {
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                    if newValue == searchText {
+                        viewModel.fetchData(for: newValue)
+                    }
+                }
             }
         }
     }

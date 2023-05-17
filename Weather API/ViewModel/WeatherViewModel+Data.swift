@@ -12,10 +12,7 @@ extension WeatherViewModel {
     func fetchWeatherDataWithCurrentLocation() {
         let locationManager = CLLocationManager()
         
-        guard let location = locationManager.location else {
-            print("Unable to retrieve current location")
-            return
-        }
+        guard let location = locationManager.location else { return }
         
         let latitude = location.coordinate.latitude
         let longitude = location.coordinate.longitude
@@ -26,16 +23,8 @@ extension WeatherViewModel {
     func fetchWeatherDataWithCity(_ city: String) {
         let geocoder = CLGeocoder()
         geocoder.geocodeAddressString(city) { [weak self] (placemarks, error) in
-            if let error = error {
-                print("Geocoding error: \(error.localizedDescription)")
-                return
-            }
-            
             guard let placemark = placemarks?.first,
-                  let location = placemark.location else {
-                print("Failed to retrieve location for city: \(city)")
-                return
-            }
+                  let location = placemark.location else { return }
             
             let latitude = location.coordinate.latitude
             let longitude = location.coordinate.longitude
@@ -50,15 +39,7 @@ extension WeatherViewModel {
         }
         
         URLSession.shared.dataTask(with: url) { [weak self] data, response, error in
-            if let error = error {
-                print("Error: \(error.localizedDescription)")
-                return
-            }
-            
-            guard let data = data else {
-                print("No data received")
-                return
-            }
+            guard let data = data else { return }
             
             do {
                 let decoder = JSONDecoder()
