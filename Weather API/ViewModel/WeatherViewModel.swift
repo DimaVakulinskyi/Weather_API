@@ -5,35 +5,44 @@
 //  Created by Dmytro Vakulinsky on 17.05.2023.
 //
 
-import Foundation
 import MapKit
 import CoreLocation
 
 class WeatherViewModel: NSObject, ObservableObject, CLLocationManagerDelegate {
     @Published var weather: WeatherResponse?
+    private let locationManager = CLLocationManager()
     
     func fetchData(for city: String) {
         let geocoder = CLGeocoder()
-        
-        geocoder.geocodeAddressString(city) { [weak self] (placemarks, error) in
-            if let error = error {
-                print("Geocoding error: \(error.localizedDescription)")
-                return
+        if city.isEmpty {
+            if let location = locationManager.location {
+                let latitude = location.coordinate.latitude
+                let longitude = location.coordinate.longitude
+                fetchWeatherData(latitude: latitude, longitude: longitude)
+            } else {
+                print("Unable to retrieve current location")
             }
-            
-            guard let placemark = placemarks?.first,
-                  let location = placemark.location else {
-                print("Failed to retrieve location for city: \(city)")
-                return
+        } else {
+            geocoder.geocodeAddressString(city) { [weak self] (placemarks, error) in
+                if let error = error {
+                    print("Geocoding error: \(error.localizedDescription)")
+                    return
+                }
+                
+                guard let placemark = placemarks?.first,
+                      let location = placemark.location else {
+                    print("Failed to retrieve location for city: \(city)")
+                    return
+                }
+                
+                let latitude = location.coordinate.latitude
+                let longitude = location.coordinate.longitude
+                
+                self?.fetchWeatherData(latitude: latitude, longitude: longitude)
             }
-            
-            let latitude = location.coordinate.latitude
-            let longitude = location.coordinate.longitude
-            
-            self?.fetchWeatherData(latitude: latitude, longitude: longitude)
         }
     }
-    
+
     private func fetchWeatherData(latitude: Double, longitude: Double) {
         guard let url = URL(string: "https://api.weatherbit.io/v2.0/forecast/daily?lat=\(latitude)&lon=\(longitude)&days=16&lang=en&key=a5274a7062584412bcaf784728decd4c") else {
             return
@@ -81,5 +90,11 @@ class WeatherViewModel: NSObject, ObservableObject, CLLocationManagerDelegate {
             }
         }.resume()
     }
+    
+    func locationManager(_ manager: CLLocationManager, didChangeAuthorization status: CLAuthorizationStatus) {
+        if status == .authorizedWhenInUse {
+            // Fetch weather data using current location
+            fetchData(for: "")
+        }
+    }
 }
-

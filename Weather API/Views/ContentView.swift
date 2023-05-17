@@ -8,6 +8,7 @@
 import SwiftUI
 
 struct ContentView: View {
+    @StateObject private var locationManager = LocationManager()
     @StateObject private var viewModel = WeatherViewModel()
     @State private var searchText: String = ""
     
@@ -39,6 +40,16 @@ struct ContentView: View {
                 Spacer()
             }
             Spacer()
+        }
+        .onAppear {
+            locationManager.startUpdatingLocation()
+            viewModel.fetchData(for: "")
+        }
+        .onChange(of: searchText) { newValue in
+            if newValue.isEmpty {
+                locationManager.startUpdatingLocation()
+                viewModel.fetchData(for: "")
+            }
         }
     }
 }
