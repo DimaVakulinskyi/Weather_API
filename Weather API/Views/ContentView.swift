@@ -13,7 +13,7 @@ struct ContentView: View {
     
     var body: some View {
         VStack {
-            SearchBar(text: $searchText) { searchText in
+            SearchBarView(text: $searchText) { searchText in
                 self.searchText = searchText
             } onSearchButtonClicked: {
                 viewModel.fetchData(for: searchText)
@@ -24,10 +24,11 @@ struct ContentView: View {
             
             if let weather = viewModel.weather {
                 Text("\(weather.cityName)")
-                    .font(.title)
-                    .fontWeight(.bold)
+                    .font(.custom("OpenSans-Bold", size: 24))
+                    .foregroundColor(Color(hex: 0x289460))
                 Text("\(weather.country)")
-                
+                    .font(.custom("OpenSans-Regular", size: 16))
+                    .foregroundColor(Color(hex: 0x575757))
                 List(weather.data, id: \.datetime) { weatherData in
                     WeatherCellView(weatherData: weatherData)
                 }
@@ -39,29 +40,6 @@ struct ContentView: View {
             }
             Spacer()
         }
-    }
-}
-
-struct WeatherCellView: View {
-    let weatherData: WeatherData
-    
-    var body: some View {
-        HStack {
-            VStack(alignment: .leading, spacing: 8) {
-                Text("\(weatherData.datetime)")
-                Text("\(weatherData.weather.description)")
-            }
-            Spacer()
-            Image(weatherData.weather.icon)
-                .resizable()
-                .aspectRatio(contentMode: .fit)
-                .frame(width: 50, height: 50)
-            VStack(alignment: .leading, spacing: 8) {
-                Text("Max: \(Int(weatherData.appMaxTemp))°C")
-                Text("Min: \(Int(weatherData.appMinTemp))°C")
-            }
-        }
-        .padding()
     }
 }
 

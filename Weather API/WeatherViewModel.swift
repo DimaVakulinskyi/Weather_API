@@ -35,7 +35,7 @@ class WeatherViewModel: NSObject, ObservableObject, CLLocationManagerDelegate {
     }
     
     private func fetchWeatherData(latitude: Double, longitude: Double) {
-        guard let url = URL(string: "https://api.weatherbit.io/v2.0/forecast/daily?lat=\(latitude)&lon=\(longitude)&days=16&lang=uk&key=a5274a7062584412bcaf784728decd4c") else {
+        guard let url = URL(string: "https://api.weatherbit.io/v2.0/forecast/daily?lat=\(latitude)&lon=\(longitude)&days=16&lang=en&key=a5274a7062584412bcaf784728decd4c") else {
             return
         }
         

@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct SearchBar: View {
+struct SearchBarView: View {
     @Binding var text: String
     
     @State private var isEditing = false
@@ -35,7 +35,7 @@ struct SearchBar: View {
                     .foregroundColor(Color.blue)
             }
             .padding(.trailing, 8)
-            .disabled(text.isEmpty) // Disable the search button if the text is empty
+            .disabled(text.isEmpty)
             
             Spacer()
         }
