@@ -7,14 +7,14 @@
 
 import MapKit
 import CoreLocation
+import SwiftUI
 
 class WeatherViewModel: NSObject, ObservableObject, CLLocationManagerDelegate {
+    @ObservedObject private var locationManager = LocationManager()
     @Published var weather: WeatherResponse?
-    private let locationManager = CLLocationManager()
     
-    override init() {
-        super.init()
-        locationManager.delegate = self
+    func startUpdatingLocation() {
+        locationManager.startUpdatingLocation()
     }
     
     func fetchData(for city: String) {

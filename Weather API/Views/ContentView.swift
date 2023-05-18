@@ -8,16 +8,13 @@
 import SwiftUI
 
 struct ContentView: View {
-    @StateObject private var locationManager = LocationManager()
     @StateObject private var viewModel = WeatherViewModel()
     @State private var searchText: String = ""
     
     var body: some View {
         VStack {
-            SearchBarView(text: $searchText) { searchText in
-                self.searchText = searchText
-            }
-            .padding(.top)
+            SearchBarView(text: $searchText)
+                .padding(.top)
             
             Spacer()
             
@@ -31,11 +28,12 @@ struct ContentView: View {
             Spacer()
         }
         .onAppear {
-            locationManager.startUpdatingLocation()
+            viewModel.startUpdatingLocation()
+            viewModel.fetchData(for: "")
         }
         .onChange(of: searchText) { newValue in
             if newValue.isEmpty {
-                locationManager.startUpdatingLocation()
+                viewModel.startUpdatingLocation()
                 viewModel.fetchData(for: "")
             } else {
                 DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {

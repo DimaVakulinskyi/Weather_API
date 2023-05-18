@@ -9,18 +9,12 @@ import SwiftUI
 
 struct SearchBarView: View {
     @Binding var text: String
-    
     @State private var isEditing = false
-    
-    var onSearchTextChange: (String) -> Void
     
     var body: some View {
         HStack {
             TextField("Search...", text: $text, onEditingChanged: { editing in
                 isEditing = editing
-                if !editing {
-                    onSearchTextChange(text)
-                }
             })
             .font(.custom("OpenSans-Regular", size: 16))
             .foregroundColor(Color(hex: 0x949494))
@@ -36,13 +30,12 @@ struct SearchBarView: View {
                         .foregroundColor(Color(hex: 0x949494))
                         .padding(.trailing, 16)
                 }
-                    .alignmentGuide(HorizontalAlignment.trailing) { dimension in
-                        dimension.width
-                    }
+                .alignmentGuide(HorizontalAlignment.trailing) { dimension in
+                    dimension.width
+                }
             )
             Spacer()
         }
         .padding(.horizontal, 16)
     }
 }
-
