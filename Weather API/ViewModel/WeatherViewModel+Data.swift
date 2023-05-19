@@ -46,7 +46,20 @@ extension WeatherViewModel {
                 let weatherResponse = try decoder.decode(WeatherResponse.self, from: data)
                 
                 let filteredData = weatherResponse.data.map { weatherData in
-                    WeatherData(appMaxTemp: weatherData.appMaxTemp, appMinTemp: weatherData.appMinTemp, temp: weatherData.temp, datetime: weatherData.datetime, weather: weatherData.weather)
+                    WeatherData(appMaxTemp: weatherData.appMaxTemp,
+                                appMinTemp: weatherData.appMinTemp,
+                                clouds: weatherData.clouds, temp: weatherData.temp,
+                                datetime: weatherData.datetime,
+                                moonPhase: weatherData.moonPhase,
+                                moonriseTs: Int(weatherData.moonPhase),
+                                moonsetTs: weatherData.moonriseTs,
+                                ozone: Double(weatherData.moonsetTs),
+                                sunriseTs: Int(weatherData.ozone),
+                                sunsetTs: weatherData.sunriseTs,
+                                uv: Double(weatherData.sunsetTs),
+                                weather: weatherData.weather,
+                                windDirection: weatherData.windDirection,
+                                windSpeed: weatherData.windSpeed)
                 }
                 let cityOnlyResponse = WeatherResponse(cityName: weatherResponse.cityName,
                                                        country: weatherResponse.country,
