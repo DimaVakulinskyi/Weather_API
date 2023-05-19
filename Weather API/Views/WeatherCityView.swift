@@ -19,7 +19,9 @@ struct WeatherInfoView: View {
                 .font(.custom("OpenSans-Regular", size: 16))
                 .foregroundColor(Color(hex: 0x575757))
             List(weather.data, id: \.datetime) { weatherData in
-                WeatherCellView(weatherData: weatherData)
+                NavigationLink(destination: WeatherDetailsView(weatherData: weatherData)) {
+                    WeatherCellView(weatherData: weatherData)
+                }
             }
             .listStyle(.plain)
         }

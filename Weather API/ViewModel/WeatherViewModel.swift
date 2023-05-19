@@ -13,8 +13,9 @@ class WeatherViewModel: NSObject, ObservableObject, CLLocationManagerDelegate {
     @ObservedObject private var locationManager = LocationManager()
     @Published var weather: WeatherResponse?
     
-    func startUpdatingLocation() {
+    func startUpdatingLocationAndFetchData() {
         locationManager.startUpdatingLocation()
+        fetchData(for: "")
     }
     
     func fetchData(for city: String) {

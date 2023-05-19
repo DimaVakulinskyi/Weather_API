@@ -12,33 +12,33 @@ struct ContentView: View {
     @State private var searchText: String = ""
     
     var body: some View {
-        VStack {
-            SearchBarView(text: $searchText)
-                .padding(.top)
-            
-            Spacer()
-            
-            if let weather = viewModel.weather {
-                WeatherInfoView(weather: weather)
-            } else {
+        NavigationView {
+            VStack {
+                SearchBarView(text: $searchText)
+                    .padding(.top)
+                
                 Spacer()
-                NoResultsView()
+                
+                if let weather = viewModel.weather {
+                    WeatherInfoView(weather: weather)
+                } else {
+                    Spacer()
+                    NoResultsView()
+                    Spacer()
+                }
                 Spacer()
             }
-            Spacer()
-        }
-        .onAppear {
-            viewModel.startUpdatingLocation()
-            viewModel.fetchData(for: "")
-        }
-        .onChange(of: searchText) { newValue in
-            if newValue.isEmpty {
-                viewModel.startUpdatingLocation()
-                viewModel.fetchData(for: "")
-            } else {
-                DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-                    if newValue == searchText {
-                        viewModel.fetchData(for: newValue)
+            .onAppear {
+                viewModel.startUpdatingLocationAndFetchData()
+            }
+            .onChange(of: searchText) { newValue in
+                if newValue.isEmpty {
+                    viewModel.startUpdatingLocationAndFetchData()
+                } else {
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                        if newValue == searchText {
+                            viewModel.fetchData(for: newValue)
+                        }
                     }
                 }
             }
